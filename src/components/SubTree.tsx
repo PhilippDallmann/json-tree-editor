@@ -14,13 +14,18 @@ function getIsLeaf(value: unknown) {
 }
 
 interface Props {
+  updateLeaf: (
+    path: Array<string | number>,
+    value: string | number | boolean,
+  ) => void;
   partialTree: object;
-  depth: number;
+  path: Array<string | number>;
   label?: string;
 }
 
 export function SubTree(props: Props) {
-  const { partialTree, label, depth } = props;
+  const { partialTree, label, path, updateLeaf } = props;
+  const depth = path.length;
   const [isExpanded, setIsExpanded] = useState(depth === 0);
 
   return (
@@ -32,10 +37,24 @@ export function SubTree(props: Props) {
       {isExpanded
         ? Object.entries(partialTree).map(([key, value], index) => {
             if (getIsLeaf(value)) {
-              return <Leaf key={index} initialValue={value} label={key} />;
+              return (
+                <Leaf
+                  key={index}
+                  initialValue={value}
+                  label={key}
+                  path={[...path, key]}
+                  updateLeaf={updateLeaf}
+                />
+              );
             }
             return (
-              <SubTree partialTree={value} label={key} depth={depth + 1} />
+              <SubTree
+                key={index}
+                partialTree={value}
+                label={key}
+                path={[...path, key]}
+                updateLeaf={updateLeaf}
+              />
             );
           })
         : null}
