@@ -1,21 +1,15 @@
-import './App.css'
+import './App.css';
+import uploadedJson from '../test.json';
+import { SubTree } from './components/SubTree';
 
-function App() {
-
+export function App() {
   return (
-    <>
+    <div>
       <h1>Vite + React</h1>
-      <div className="card">
-        <button>
-          Button
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <input className="file-input" type="file" />
+      <div className="tree">
+        <SubTree partialTree={uploadedJson} depth={0} />
       </div>
-
-    </>
-  )
+    </div>
+  );
 }
-
-export default App
