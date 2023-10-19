@@ -31,7 +31,7 @@ export function SubTree(props: Props) {
   return (
     <div className="sub-tree">
       <span className="branch-header" onClick={() => setIsExpanded((v) => !v)}>
-        {isExpanded ? '^ ' : 'v '}
+        {isExpanded ? '⏶ ' : '⏷ '}
         {label && <b>{`${label}: `}</b>}
       </span>
       {isExpanded
@@ -40,7 +40,7 @@ export function SubTree(props: Props) {
               return (
                 <Leaf
                   key={index}
-                  initialValue={value}
+                  treeValue={value}
                   label={key}
                   path={[...path, key]}
                   updateLeaf={updateLeaf}

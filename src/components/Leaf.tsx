@@ -5,20 +5,46 @@ interface Props {
     path: Array<string | number>,
     value: string | number | boolean,
   ) => void;
-  initialValue: string | number | boolean;
+  treeValue: string | number | boolean;
   path: Array<string | number>;
   label?: string;
 }
 
 export function Leaf(props: Props) {
-  const { initialValue, label, updateLeaf, path } = props;
+  const { treeValue, label, updateLeaf, path } = props;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [value, setValue] = useState(initialValue);
+  const [value, setValue] = useState(treeValue);
+  const [isEditing, setIsEditing] = useState(false);
+
+  function saveChanges() {
+    updateLeaf(path, value);
+    setIsEditing(false);
+  }
 
   return (
-    <div className="leaf" onClick={() => updateLeaf(path, 'test')}>
+    <div className="leaf">
       {label && <b>{`${label}: `}</b>}
-      {initialValue.toString()}
+      {isEditing ? (
+        <input
+          value={value.toString()}
+          onChange={(e) => setValue(e.target.value)}
+        />
+      ) : (
+        treeValue.toString()
+      )}
+      {isEditing ? (
+        <button className="icon-button" aria-label="Save" onClick={saveChanges}>
+          ✓
+        </button>
+      ) : (
+        <button
+          className="icon-button"
+          aria-label="Edit"
+          onClick={() => setIsEditing(true)}
+        >
+          ✎
+        </button>
+      )}
     </div>
   );
 }
