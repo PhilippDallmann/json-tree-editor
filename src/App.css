@@ -44,3 +44,7 @@
 .icon-button {
   padding: 0.2em 0.4em;
 }
+
+.error-message {
+  color: red;
+}

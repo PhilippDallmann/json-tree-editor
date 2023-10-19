@@ -27,7 +27,7 @@ export function App() {
     const newTree = updateLeafAtPath(tree, path, value);
     setTree(newTree);
   }
-  console.log(tree);
+
   return (
     <div>
       <h1>Vite + React</h1>
