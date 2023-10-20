@@ -3,14 +3,6 @@ import uploadedJson from '../test.json';
 import { SubTree } from './components/SubTree';
 import { ChangeEvent, useRef, useState } from 'react';
 
-type JSONValue = string | number | boolean | null | JSONObject | JSONArray;
-
-interface JSONObject {
-  [x: string]: JSONValue;
-}
-
-type JSONArray = Array<JSONValue>;
-
 async function parseJsonFile(file: File) {
   return new Promise((resolve, reject) => {
     const fileReader = new FileReader();
@@ -29,8 +21,8 @@ async function parseJsonFile(file: File) {
 
 function updateLeafAtGivenPath(
   tree: JSONObject,
-  path: Array<string | number>,
-  value: string | number | boolean,
+  path: LeafPath,
+  value: LeafValue,
 ): JSONObject {
   const [first, ...restOfPath] = path;
   return {
@@ -43,7 +35,7 @@ function updateLeafAtGivenPath(
 
 export function App() {
   const [tree, setTree] = useState<JSONObject>(uploadedJson);
-  const updatedTree = useRef(tree);
+  const treeRef = useRef(tree);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleUploadClick() {
@@ -60,7 +52,7 @@ export function App() {
 
   function handleDownloadClick() {
     const fileName = 'updated-file';
-    const json = JSON.stringify(updatedTree, null, 2);
+    const json = JSON.stringify(treeRef, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const href = URL.createObjectURL(blob);
 
@@ -75,11 +67,11 @@ export function App() {
   }
 
   function updateLeaf(
-    path: Array<string | number>,
-    value: string | number | boolean,
+    path: LeafPath,
+    value: LeafValue,
   ) {
     const newTree = updateLeafAtGivenPath(tree, path, value);
-    updatedTree.current = newTree;
+    treeRef.current = newTree;
   }
 
   return (
@@ -100,7 +92,7 @@ export function App() {
       </div>
       <div className="tree">
         <SubTree
-          partialTree={updatedTree.current}
+          partialTree={treeRef.current}
           path={[]}
           updateLeaf={updateLeaf}
         />
