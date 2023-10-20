@@ -48,6 +48,10 @@ export function Leaf(props: Props) {
     setValidationErrorMessage(message);
   }
 
+  if (treeValue === null) {
+    return <div className="leaf">{label && <b>{`${label}: `}</b>}null</div>;
+  }
+
   return (
     <div className="leaf">
       {label && <b>{`${label}: `}</b>}
