@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-function validate(
-  value: string | number | boolean,
-  type: 'string' | 'number' | 'boolean',
-) {
+type LeafValue = string | number | boolean | null;
+type LeafValueType = 'string' | 'number' | 'boolean';
+
+function validate(value: LeafValue, type: LeafValueType) {
   if (type === 'boolean') {
     if (value === 'true' || value === 'false') {
       return { isValid: true, validatedValue: value === 'true' };
@@ -24,11 +24,8 @@ function validate(
 }
 
 interface Props {
-  updateLeaf: (
-    path: Array<string | number>,
-    value: string | number | boolean,
-  ) => void;
-  treeValue: string | number | boolean;
+  updateLeaf: (path: Array<string | number>, value: LeafValue) => void;
+  treeValue: LeafValue;
   path: Array<string | number>;
   label?: string;
 }
@@ -42,14 +39,12 @@ export function Leaf(props: Props) {
   >();
 
   function saveChanges() {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
     const { isValid, message, validatedValue } = validate(
       value,
-      typeof treeValue,
+      typeof treeValue as LeafValueType,
     );
 
-    if (isValid && validatedValue) {
+    if (isValid && validatedValue !== undefined) {
       updateLeaf(path, validatedValue);
       setIsEditing(false);
     }
@@ -61,11 +56,11 @@ export function Leaf(props: Props) {
       {label && <b>{`${label}: `}</b>}
       {isEditing ? (
         <input
-          value={value.toString()}
+          value={value?.toString()}
           onChange={(e) => setValue(e.target.value)}
         />
       ) : (
-        treeValue.toString()
+        value?.toString()
       )}
       {isEditing ? (
         <button className="icon-button" aria-label="Save" onClick={saveChanges}>
