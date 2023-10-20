@@ -1,5 +1,4 @@
 import './App.css';
-import uploadedJson from '../test.json';
 import { SubTree } from './components/SubTree';
 import { ChangeEvent, useRef, useState } from 'react';
 
@@ -34,8 +33,8 @@ function updateLeafAtGivenPath(
 }
 
 export function App() {
-  const [tree, setTree] = useState<JSONObject>(uploadedJson);
-  const treeRef = useRef(tree);
+  const [, forceUpdate] = useState({});
+  const treeRef = useRef<JSONObject | undefined>();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleUploadClick() {
@@ -46,7 +45,8 @@ export function App() {
     const file = event.target.files?.[0];
     if (file) {
       const parsedTree = await parseJsonFile(file);
-      setTree(parsedTree as JSONObject);
+      treeRef.current = parsedTree;
+      forceUpdate({});
     }
   }
 
@@ -66,12 +66,11 @@ export function App() {
     URL.revokeObjectURL(href);
   }
 
-  function updateLeaf(
-    path: LeafPath,
-    value: LeafValue,
-  ) {
-    const newTree = updateLeafAtGivenPath(tree, path, value);
-    treeRef.current = newTree;
+  function updateLeaf(path: LeafPath, value: LeafValue) {
+    if (treeRef.current) {
+      const newTree = updateLeafAtGivenPath(treeRef.current, path, value);
+      treeRef.current = newTree;
+    }
   }
 
   return (
@@ -86,17 +85,19 @@ export function App() {
           onChange={handleFileUpload}
           accept=".json"
         />
-        <button disabled={!tree} onClick={handleDownloadClick}>
+        <button disabled={!treeRef.current} onClick={handleDownloadClick}>
           Download
         </button>
       </div>
-      <div className="tree">
-        <SubTree
-          partialTree={treeRef.current}
-          path={[]}
-          updateLeaf={updateLeaf}
-        />
-      </div>
+      {treeRef.current ? (
+        <div className="tree">
+          <SubTree
+            partialTree={treeRef.current}
+            path={[]}
+            updateLeaf={updateLeaf}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }
