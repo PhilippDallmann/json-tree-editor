@@ -52,7 +52,7 @@ export function App() {
 
   function handleDownloadClick() {
     const fileName = 'updated-file';
-    const json = JSON.stringify(treeRef, null, 2);
+    const json = JSON.stringify(treeRef.current, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const href = URL.createObjectURL(blob);
 
