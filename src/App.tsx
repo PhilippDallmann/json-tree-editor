@@ -45,7 +45,7 @@ export function App() {
     const file = event.target.files?.[0];
     if (file) {
       const parsedTree = await parseJsonFile(file);
-      treeRef.current = parsedTree;
+      treeRef.current = parsedTree as JSONObject;
       forceUpdate({});
     }
   }
