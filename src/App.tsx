@@ -6,11 +6,12 @@ async function parseJsonFile(file: File) {
   return new Promise((resolve, reject) => {
     const fileReader = new FileReader();
     fileReader.onload = (event: ProgressEvent<FileReader>) => {
-      const text = event.target?.result;
-      if (typeof text === 'string') {
-        resolve(JSON.parse(text));
-      } else {
-        reject();
+      try {
+        const text = event.target?.result;
+        const result = JSON.parse(text as string);
+        resolve(result);
+      } catch (error) {
+        reject(error);
       }
     };
     fileReader.onerror = (error) => reject(error);
@@ -44,9 +45,13 @@ export function App() {
   async function handleFileUpload(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (file) {
-      const parsedTree = await parseJsonFile(file);
-      treeRef.current = parsedTree as JSONObject;
-      forceUpdate({});
+      try {
+        const parsedTree = await parseJsonFile(file);
+        treeRef.current = parsedTree as JSONObject;
+        forceUpdate({});
+      } catch (error) {
+        alert(error);
+      }
     }
   }
 

@@ -28,8 +28,12 @@ export function SubTree(props: Props) {
   return (
     <div className="sub-tree">
       <span className="branch-header" onClick={() => setIsExpanded((v) => !v)}>
-        {isExpanded ? '⏶ ' : '⏷ '}
-        {label && <b>{`${label}: `}</b>}
+        {label ? (
+          <span>
+            {isExpanded ? '⏶ ' : '⏷ '}
+            <b>{`${label}: `}</b>
+          </span>
+        ) : null}
       </span>
       {isExpanded
         ? Object.entries(partialTree).map(([key, value], index) => {
